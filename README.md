@@ -26,8 +26,8 @@ This sample uses the Gradle build system.  To build this project, use the
 ##Inserting your [OpenWeatherMap](http://openweathermap.org) Key
 
 1. locate and open the "gradle.properties" in the root of your project.
-2. Insert the following line **MyOpenWeatherMapApiKey="<YOUR-API-KEY>"**
-3. Replace **<YOUR-API-KEY>** with the key you've received from the website mentioned above.
+2. Insert the following line **MyOpenWeatherMapApiKey="YOUR-API-KEY-HERE"**
+3. Replace **YOUR-API-KEY-HERE** with the key you've received from the website mentioned above.
 
 Support
 -------
