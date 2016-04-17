@@ -16,11 +16,23 @@ Android Support RecyclerView 22.2.0
 Google Play Services GCM 7.0.0
 BumpTech Glide 3.5.2
 
+OpenWeatherMap API KEY
+----------------------
+
+Get yours from here -> http://openweathermap.org/appid
 
 Getting Started
 ---------------
 This sample uses the Gradle build system.  To build this project, use the
 "gradlew build" command or use "Import Project" in Android Studio.
+
+Inserting Your OpenWeatherMap Key
+---------------------------------
+
+1.locate and open the "gradle.properties" in the root of your project.
+
+2. Insert the following line MyOpenWeatherMapApiKey="<YOUR-API-KEY>"
+Replace <YOUR-API-KEY> with the key you've received from the website mentioned above.
 
 Support
 -------
