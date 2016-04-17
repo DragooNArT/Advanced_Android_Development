@@ -153,6 +153,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setDoOutput(false);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
