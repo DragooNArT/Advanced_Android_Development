@@ -3,8 +3,7 @@ Advanced Android Sample App
 
 Synchronizes weather information from OpenWeatherMap on Android Phones and Tablets. Used in the Udacity Advanced Android course.
 
-Pre-requisites
---------------
+## Pre-requisites
 Android SDK 21 or Higher
 Build Tools version 21.1.2
 Android Support AppCompat 22.2.0
@@ -16,23 +15,20 @@ Android Support RecyclerView 22.2.0
 Google Play Services GCM 7.0.0
 BumpTech Glide 3.5.2
 
-OpenWeatherMap API KEY
-----------------------
+###OpenWeatherMap API KEY
 
 Get yours from here -> http://openweathermap.org/appid
 
-Getting Started
----------------
+##Getting Started
+
 This sample uses the Gradle build system.  To build this project, use the
 "gradlew build" command or use "Import Project" in Android Studio.
 
-Inserting Your OpenWeatherMap Key
----------------------------------
+##Inserting Your OpenWeatherMap Key
 
 1.locate and open the "gradle.properties" in the root of your project.
-
-2. Insert the following line MyOpenWeatherMapApiKey="<YOUR-API-KEY>"
-Replace <YOUR-API-KEY> with the key you've received from the website mentioned above.
+2.Insert the following line MyOpenWeatherMapApiKey="<YOUR-API-KEY>"
+3.Replace <YOUR-API-KEY> with the key you've received from the website mentioned above.
 
 Support
 -------
