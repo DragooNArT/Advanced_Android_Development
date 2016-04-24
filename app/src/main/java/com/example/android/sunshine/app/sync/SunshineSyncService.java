@@ -17,6 +17,7 @@ public class SunshineSyncService extends Service {
                 sSunshineSyncAdapter = new SunshineSyncAdapter(getApplicationContext(), true);
             }
         }
+
     }
 
     @Override

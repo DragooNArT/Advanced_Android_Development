@@ -5,10 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.sunshinewearapp.MainSunshineWearActivity"
-    tools:deviceIds="wear_square">
+    tools:deviceIds="wear_square"
+    android:background="@color/activity_background">
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/currentDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_square" />

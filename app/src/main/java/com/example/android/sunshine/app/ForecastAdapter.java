@@ -19,6 +19,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,6 +32,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.sunshine.app.data.WeatherContract;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
@@ -49,6 +56,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     final private ForecastAdapterOnClickHandler mClickHandler;
     final private View mEmptyView;
     final private ItemChoiceManager mICM;
+
+    private GoogleApiClient mGoogleApiClient;
+
+    public void setGoogleApiClient(GoogleApiClient googleApiClient) {
+        this.mGoogleApiClient = googleApiClient;
+    }
+
+
 
     /**
      * Cache of the children views for a forecast list item.
@@ -122,6 +137,38 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         }
     }
 
+    private static int lastWeatherId;
+    private static double lastHighTemp;
+    private static double lastLowTemp;
+
+    public void sendWeatherData(int weatherId, double high, double low) {
+        // this is to prevent excessive data flow(very basic implementation)
+        if(weatherId == lastWeatherId && high == lastHighTemp && low == lastLowTemp) {
+            return;
+        }
+
+
+        PutDataMapRequest dataMap = PutDataMapRequest.create("/weather-data");
+        dataMap.getDataMap().putLong("WEATHER_ID_KEY",weatherId);
+        dataMap.getDataMap().putDouble("WEATHER_HIGH_KEY",high);
+        dataMap.getDataMap().putDouble("WEATHER_LOW_KEY",low);
+
+        PutDataRequest request = dataMap.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient,request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+            @Override
+            public void onResult(@NonNull DataApi.DataItemResult dataItemResult) {
+                if(!dataItemResult.getStatus().isSuccess()) {
+                    Log.e("SendWearable","Failed to send data to wearable device");
+                } else {
+                    Log.d("SendWearable","Sent data to wearable device successfully");
+                }
+            }
+        });
+        lastWeatherId = weatherId;
+        lastHighTemp = high;
+        lastLowTemp = low;
+    }
+
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
         mCursor.moveToPosition(position);
@@ -183,6 +230,9 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         forecastAdapterViewHolder.mLowTempView.setContentDescription(mContext.getString(R.string.a11y_low_temp, lowString));
 
         mICM.onBindViewHolder(forecastAdapterViewHolder, position);
+        if(useLongToday) {
+            sendWeatherData(weatherId,high,low);
+        }
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {

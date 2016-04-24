@@ -8,4 +8,5 @@
     app:rectLayout="@layout/rect_activity_main_sunshine_wear"
     app:roundLayout="@layout/round_activity_main_sunshine_wear"
     tools:context="com.example.sunshinewearapp.MainSunshineWearActivity"
-    tools:deviceIds="wear"></android.support.wearable.view.WatchViewStub>
+    tools:deviceIds="wear"
+    android:background="@color/activity_background"></android.support.wearable.view.WatchViewStub>
