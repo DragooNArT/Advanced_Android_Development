@@ -1,37 +1,39 @@
 package com.example.andorid.sunshine.app;
 
 import com.example.andorid.R;
+import com.example.andorid.sunshine.app.data.WeatherDataHolder;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
 public class SunshineDataReceiver extends WearableListenerService {
 
-    public static final String WEATHER_ID_KEY = "WEATHER_ID_DRAWABLE";
 
-    public static final String WEATHER_LOW_KEY = "WEATHER_LOW_KEY";
+    private static WeatherDataHolder holder;
 
-    public static final String WEATHER_HIGH_KEY = "WEATHER_HIGH_KEY";
+    public static WeatherDataHolder getLatestWeatherData() {
+        return holder;
+    }
 
-
-
-//    @Override
-//    public void onDataChanged(DataEventBuffer dataEvents) {
-//      for(DataEvent event : dataEvents) {
-//          if(event.getType() == DataEvent.TYPE_CHANGED) {
-//              DataMap dataMap = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
-//              String path = event.getDataItem().getUri().getPath();
-//              if(path.equals("/weather-data")) {
-//                  int weatherDrawableId = getArtResourceForWeatherCondition(dataMap.getInt("WEATHER_ID_KEY"));
-//                  Intent intent = new Intent( this, MainSunshineWearActivity.class );
-//                  intent.putExtra(WEATHER_ID_KEY,weatherDrawableId);
-//                  intent.putExtra(WEATHER_HIGH_KEY,dataMap.getDouble("WEATHER_HIGH_KEY"));
-//                  intent.putExtra(WEATHER_LOW_KEY,dataMap.getDouble("WEATHER_LOW_KEY"));
-//                  intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-//                  startActivity( intent );
-//              }
-//          }
-//      }
-//    }
+    @Override
+    public void onDataChanged(DataEventBuffer dataEvents) {
+      for(DataEvent event : dataEvents) {
+          if(event.getType() == DataEvent.TYPE_CHANGED) {
+              DataMap dataMap = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
+              String path = event.getDataItem().getUri().getPath();
+              if(path.equals("/weather-data")) {
+                  holder = new WeatherDataHolder();
+                  holder.setWeatherId(dataMap.getInt(Constants.WEATHER_ID_KEY));
+                  holder.setHigh_temp(dataMap.getInt(Constants.WEATHER_HIGH_KEY));
+                  holder.setLow_temp(dataMap.getInt(Constants.WEATHER_LOW_KEY));
+                  holder.setDate(dataMap.getString(Constants.WEATHER_CURRENT_DATE_KEY));
+              }
+          }
+      }
+    }
 
 
     public static int getArtResourceForWeatherCondition(long weatherId) {
