@@ -197,7 +197,11 @@
         <service
             android:name=".gcm.WearableServiceReceiver"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

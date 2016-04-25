@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,9 +8,58 @@
     tools:deviceIds="wear_square"
     android:background="@color/activity_background">
 
-    <TextView
-        android:id="@+id/currentDate"
+    <TextClock
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_square" />
-</LinearLayout>
+        android:id="@+id/textClock"
+        android:textSize="40dp"
+        android:layout_above="@+id/view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp" />
+    <View
+        android:layout_width="110dp"
+        android:layout_height="2dp"
+        android:background="#3eb9ee"
+        android:id="@+id/view"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="39dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Medium Text"
+        android:id="@+id/currentDate"
+        android:textSize="20dp"
+        android:layout_above="@+id/view"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/weather_conditions"
+        android:src="@drawable/art_clear"
+        android:maxWidth="80dp"
+        android:adjustViewBounds="true"
+        android:layout_below="@+id/currentDate"
+        android:layout_alignStart="@+id/currentDate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="-1°"
+        android:id="@+id/temp_low"
+        android:textIsSelectable="true"
+
+        android:layout_below="@+id/view"
+        android:layout_alignEnd="@id/view" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="+1°"
+        android:id="@+id/high_temp"
+        android:layout_above="@+id/temp_low"
+        android:layout_alignEnd="@id/view" />
+</RelativeLayout>

@@ -156,14 +156,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
             throw new RuntimeException("Not bound to RecyclerView");
         }
     }
-    public void sendWeatherData(int weatherId, double high, double low) {
+    public void sendWeatherData(int weatherId, double high, double low, String friendlyDayString) {
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/weather-data");
         dataMap.getDataMap().putString("RANDOM", UUID.randomUUID().toString());
         dataMap.getDataMap().putLong("WEATHER_ID_KEY", weatherId);
         dataMap.getDataMap().putDouble("WEATHER_HIGH_KEY", high);
         dataMap.getDataMap().putDouble("WEATHER_LOW_KEY", low);
-
+        dataMap.getDataMap().putString("WEATHER_CURRENT_DATE",friendlyDayString);
         PutDataRequest request = dataMap.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
             @Override
@@ -240,7 +240,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         mICM.onBindViewHolder(forecastAdapterViewHolder, position);
         if(useLongToday) {
-            sendWeatherData(weatherId,high,low);
+            sendWeatherData(weatherId,high,low,Utility.getFriendlyDayString(mContext, dateInMillis, useLongToday));
         }
     }
 

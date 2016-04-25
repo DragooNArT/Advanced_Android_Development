@@ -19,6 +19,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -54,7 +55,8 @@
             android:name=".sunshine.app.SunshineDataReceiver"
             android:enabled="true"
             android:exported="true"><intent-filter>
-            <action android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
+            <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+            <data android:scheme="wear" android:host="*" android:pathPrefix="/notify-weather" />
         </intent-filter></service>
     </application>
 

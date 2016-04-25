@@ -34,7 +34,7 @@ public class SunshineDataReceiver extends WearableListenerService {
 //    }
 
 
-    public static int getArtResourceForWeatherCondition(int weatherId) {
+    public static int getArtResourceForWeatherCondition(long weatherId) {
         // Based on weather code data found at:
         // http://bugs.openweathermap.org/projects/api/wiki/Weather_Condition_Codes
         if (weatherId >= 200 && weatherId <= 232) {
