@@ -29,12 +29,17 @@ import android.widget.Toast;
 
 import com.example.android.sunshine.app.MainActivity;
 import com.example.android.sunshine.app.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.android.gms.wearable.Wearable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MyGcmListenerService extends GcmListenerService {
+public class MyGcmListenerService extends GcmListenerService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MyGcmListenerService";
 
@@ -43,6 +48,26 @@ public class MyGcmListenerService extends GcmListenerService {
     private static final String EXTRA_LOCATION = "location";
 
     public static final int NOTIFICATION_ID = 1;
+    private GoogleApiClient mGoogleApiClient;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getBaseContext()).
+                addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+    }
 
     /**
      * Called when message is received.
@@ -106,5 +131,34 @@ public class MyGcmListenerService extends GcmListenerService {
                         .setPriority(NotificationCompat.PRIORITY_HIGH);
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+
+        Wearable.MessageApi.sendMessage(mGoogleApiClient, "nekvoId",
+                "/notify-weather", message.getBytes()).setResultCallback(
+                new ResultCallback() {
+
+                    @Override
+                    public void onResult(Result result) {
+                        if (!result.getStatus().isSuccess()) {
+                            // Failed to send message
+                        }
+                    }
+
+
+                });
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

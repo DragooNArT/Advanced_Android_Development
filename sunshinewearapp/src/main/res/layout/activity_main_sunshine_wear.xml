@@ -7,6 +7,6 @@
     android:layout_height="match_parent"
     app:rectLayout="@layout/rect_activity_main_sunshine_wear"
     app:roundLayout="@layout/round_activity_main_sunshine_wear"
-    tools:context="com.example.sunshinewearapp.MainSunshineWearActivity"
+    tools:context=".sunshine.app.MainSunshineWearActivity"
     tools:deviceIds="wear"
     android:background="@color/activity_background"></android.support.wearable.view.WatchViewStub>

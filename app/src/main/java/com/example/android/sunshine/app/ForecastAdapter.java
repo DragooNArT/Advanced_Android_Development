@@ -34,11 +34,14 @@ import com.bumptech.glide.Glide;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import java.util.UUID;
 
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
@@ -153,39 +156,27 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
             throw new RuntimeException("Not bound to RecyclerView");
         }
     }
-
-    private static int lastWeatherId;
-    private static double lastHighTemp;
-    private static double lastLowTemp;
-
     public void sendWeatherData(int weatherId, double high, double low) {
-        // this is to prevent excessive data flow(very basic implementation)
-        if(weatherId == lastWeatherId && high == lastHighTemp && low == lastLowTemp) {
-            return;
-        }
-
-
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/weather-data");
-        dataMap.getDataMap().putLong("WEATHER_ID_KEY",weatherId);
-        dataMap.getDataMap().putDouble("WEATHER_HIGH_KEY",high);
-        dataMap.getDataMap().putDouble("WEATHER_LOW_KEY",low);
+        dataMap.getDataMap().putString("RANDOM", UUID.randomUUID().toString());
+        dataMap.getDataMap().putLong("WEATHER_ID_KEY", weatherId);
+        dataMap.getDataMap().putDouble("WEATHER_HIGH_KEY", high);
+        dataMap.getDataMap().putDouble("WEATHER_LOW_KEY", low);
 
         PutDataRequest request = dataMap.asPutDataRequest();
-        Wearable.DataApi.putDataItem(mGoogleApiClient,request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+        Wearable.DataApi.putDataItem(mGoogleApiClient, request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
             @Override
             public void onResult(@NonNull DataApi.DataItemResult dataItemResult) {
-                if(!dataItemResult.getStatus().isSuccess()) {
-                    Log.e("SendWearable","Failed to send data to wearable device");
+                if (!dataItemResult.getStatus().isSuccess()) {
+                    Log.e("SendWearable", "Failed to send data to wearable device");
                 } else {
-                    Log.d("SendWearable","Sent data to wearable device successfully");
+                    Log.d("SendWearable", "Sent data to wearable device successfully");
                 }
             }
         });
-        lastWeatherId = weatherId;
-        lastHighTemp = high;
-        lastLowTemp = low;
     }
+
 
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
