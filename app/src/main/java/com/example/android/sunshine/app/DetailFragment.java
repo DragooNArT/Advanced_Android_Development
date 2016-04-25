@@ -299,10 +299,4 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoaderReset(Loader<Cursor> loader) { }
 
 
-
-    private GoogleApiClient mGoogleApiClient;
-
-    public void setGoogleApiClient(GoogleApiClient googleApiClient) {
-        this.mGoogleApiClient = googleApiClient;
-    }
 }

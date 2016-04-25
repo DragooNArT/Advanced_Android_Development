@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.sunshine.app.data.WeatherContract;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
@@ -43,7 +44,7 @@ import com.google.android.gms.wearable.Wearable;
  * {@link ForecastAdapter} exposes a list of weather forecasts
  * from a {@link android.database.Cursor} to a {@link android.support.v7.widget.RecyclerView}.
  */
-public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
+public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
@@ -63,6 +64,22 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         this.mGoogleApiClient = googleApiClient;
     }
 
+    private boolean isGoogleApiConnected = false;
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        isGoogleApiConnected = true;
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        isGoogleApiConnected = false;
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        isGoogleApiConnected = false;
+    }
 
 
     /**
@@ -146,6 +163,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         if(weatherId == lastWeatherId && high == lastHighTemp && low == lastLowTemp) {
             return;
         }
+
 
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/weather-data");

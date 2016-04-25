@@ -52,6 +52,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA8uW-O5Q45Yg7abcH94Uw0FSduwA8LEX0"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
