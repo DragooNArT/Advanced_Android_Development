@@ -16,6 +16,7 @@
 
 package com.example.android.sunshine.app.gcm;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -49,6 +50,7 @@ public class MyGcmListenerService extends GcmListenerService implements GoogleAp
 
     public static final int NOTIFICATION_ID = 1;
     private GoogleApiClient mGoogleApiClient;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -64,7 +66,7 @@ public class MyGcmListenerService extends GcmListenerService implements GoogleAp
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mGoogleApiClient != null) {
+        if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
     }
@@ -105,8 +107,8 @@ public class MyGcmListenerService extends GcmListenerService implements GoogleAp
     }
 
     /**
-     *  Put the message into a notification and post it.
-     *  This is just one simple example of what you might choose to do with a GCM message.
+     * Put the message into a notification and post it.
+     * This is just one simple example of what you might choose to do with a GCM message.
      *
      * @param message The alert message to be posted.
      */
@@ -121,6 +123,10 @@ public class MyGcmListenerService extends GcmListenerService implements GoogleAp
         // object along in our notification builder. Generally, you want to use the app icon as the
         // small icon, so that users understand what app is triggering this notification.
         Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.art_storm);
+        NotificationCompat.WearableExtender wearableExtender =
+                new NotificationCompat.WearableExtender()
+                        .setCustomSizePreset(Notification.WearableExtender.SIZE_MEDIUM)
+                        .setStartScrollBottom(true);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.art_clear)
@@ -130,6 +136,7 @@ public class MyGcmListenerService extends GcmListenerService implements GoogleAp
                         .setContentText(message)
                         .setPriority(NotificationCompat.PRIORITY_HIGH);
         mBuilder.setContentIntent(contentIntent);
+        mBuilder.extend(wearableExtender);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 
         Wearable.MessageApi.sendMessage(mGoogleApiClient, "nekvoId",
