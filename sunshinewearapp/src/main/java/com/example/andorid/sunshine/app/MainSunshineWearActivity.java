@@ -1,8 +1,9 @@
 package com.example.andorid.sunshine.app;
 
-import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.widget.ImageView;
@@ -22,12 +23,11 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.UUID;
 
-public class MainSunshineWearActivity extends Activity implements
+public class MainSunshineWearActivity extends WearableActivity implements
         DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public static final String WEATHER_CELSISUS_PREFIX = "°";
 
@@ -36,10 +36,13 @@ public class MainSunshineWearActivity extends Activity implements
 
     private boolean hasData = false;
 
+    private WeatherDataHolder latestData = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_sunshine_wear);
+        setAmbientEnabled();
         stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         Bundle extras = getIntent().getExtras();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -70,7 +73,7 @@ public class MainSunshineWearActivity extends Activity implements
                 }
             });
             hasData = true;
-        } else if(SunshineDataReceiver.getLatestWeatherData()!=null) {
+        } else if (SunshineDataReceiver.getLatestWeatherData() != null) {
             stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
                 @Override
                 public void onLayoutInflated(WatchViewStub stub) {
@@ -93,30 +96,69 @@ public class MainSunshineWearActivity extends Activity implements
                 public void onLayoutInflated(WatchViewStub stub) {
                     TextView dateField = (TextView) stub.findViewById(R.id.currentDate);
                     GregorianCalendar calendar = new GregorianCalendar();
-                    dateField.setText("Today,"+calendar.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.US)+" "+calendar.get(Calendar.DAY_OF_MONTH));
+                    dateField.setText("Today," + calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US) + " " + calendar.get(Calendar.DAY_OF_MONTH));
                 }
             });
         }
 
     }
 
+    @Override
+    public void onEnterAmbient(Bundle ambientData) {
+        super.onEnterAmbient(ambientData);
+        String burnIn = ambientData.getString(EXTRA_BURN_IN_PROTECTION);
+        String lowBit = ambientData.getString(EXTRA_LOWBIT_AMBIENT);
+        TextView dateField = (TextView) stub.findViewById(R.id.currentDate);
+        dateField.getPaint().setAntiAlias(false);
+        ImageView image = (ImageView) stub.findViewById(R.id.weather_conditions);
+        TextView high_temp = (TextView) stub.findViewById(R.id.high_temp);
+        high_temp.getPaint().setAntiAlias(false);
+        TextView low_temp = (TextView) stub.findViewById(R.id.temp_low);
+        low_temp.getPaint().setAntiAlias(false);
+        stub.setBackgroundColor(Color.BLACK);
+    }
 
-    private void updateUI(final DataMap map) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView dateField = (TextView) stub.findViewById(R.id.currentDate);
-                dateField.setText(map.getString(Constants.WEATHER_CURRENT_DATE_KEY));
-                int weatherDrawableId = SunshineDataReceiver.getArtResourceForWeatherCondition(map.getLong(Constants.WEATHER_ID_KEY));
-                int low = map.getInt(Constants.WEATHER_LOW_KEY);
-                int high = map.getInt(Constants.WEATHER_HIGH_KEY);
-                ImageView image = (ImageView) stub.findViewById(R.id.weather_conditions);
-                image.setImageResource(weatherDrawableId);
-                TextView high_temp = (TextView) stub.findViewById(R.id.high_temp);
-                high_temp.setText(high + WEATHER_CELSISUS_PREFIX);
-                TextView low_temp = (TextView) stub.findViewById(R.id.temp_low);
-                low_temp.setText(low + WEATHER_CELSISUS_PREFIX);
-            }});
+    @Override
+    public void onExitAmbient() {
+        super.onExitAmbient();
+        stub.setBackgroundColor(getResources().getColor(R.color.activity_background));
+        TextView dateField = (TextView) stub.findViewById(R.id.currentDate);
+        dateField.getPaint().setAntiAlias(true);
+        ImageView image = (ImageView) stub.findViewById(R.id.weather_conditions);
+        TextView high_temp = (TextView) stub.findViewById(R.id.high_temp);
+        high_temp.getPaint().setAntiAlias(true);
+        TextView low_temp = (TextView) stub.findViewById(R.id.temp_low);
+        low_temp.getPaint().setAntiAlias(true);
+        stub.setBackgroundColor(Color.BLACK);
+    }
+
+    @Override
+    public void onUpdateAmbient() {
+        super.onUpdateAmbient();
+        updateUI();
+    }
+
+    private void storeWeatherData(final DataMap map) {
+        latestData = new WeatherDataHolder();
+        latestData.setDate(map.getString(Constants.WEATHER_CURRENT_DATE_KEY));
+        latestData.setWeatherId(map.getInt(Constants.WEATHER_ID_KEY));
+        latestData.setLow_temp(map.getInt(Constants.WEATHER_LOW_KEY));
+        latestData.setHigh_temp(map.getInt(Constants.WEATHER_HIGH_KEY));
+    }
+
+    private void updateUI() {
+        if (latestData != null) {
+            TextView dateField = (TextView) stub.findViewById(R.id.currentDate);
+            dateField.setText(latestData.getDate());
+            int weatherDrawableId = SunshineDataReceiver.getArtResourceForWeatherCondition(latestData.getWeatherId());
+
+            ImageView image = (ImageView) stub.findViewById(R.id.weather_conditions);
+            image.setImageResource(weatherDrawableId);
+            TextView high_temp = (TextView) stub.findViewById(R.id.high_temp);
+            high_temp.setText(latestData.getHigh_temp() + WEATHER_CELSISUS_PREFIX);
+            TextView low_temp = (TextView) stub.findViewById(R.id.temp_low);
+            low_temp.setText(latestData.getLow_temp() + WEATHER_CELSISUS_PREFIX);
+        }
     }
 
     @Override
@@ -127,7 +169,15 @@ public class MainSunshineWearActivity extends Activity implements
                 DataMap dataMap = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
                 String path = event.getDataItem().getUri().getPath();
                 if (path.equals("/weather-data")) {
-                    updateUI(dataMap);
+                    storeWeatherData(dataMap);
+                    if (!isAmbient()) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateUI();
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -145,7 +195,7 @@ public class MainSunshineWearActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
-        if(hasData) {
+        if (hasData) {
             //ask mobile device for data
             PutDataMapRequest dataMap = PutDataMapRequest.create("/request-weather-data");
             dataMap.getDataMap().putString("alwaysChanging", UUID.randomUUID().toString());
