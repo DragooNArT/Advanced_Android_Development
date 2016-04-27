@@ -2,4 +2,5 @@
     <string name="app_name">SunshineWearApp</string>
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
+    <string name="sunshine_watchface_name">Sunshine WeatherApp WatcFace</string>
 </resources>

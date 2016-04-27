@@ -159,9 +159,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     public void sendWeatherData(int weatherId, double high, double low, String friendlyDayString) {
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/weather-data");
-        dataMap.getDataMap().putLong("WEATHER_ID_KEY", weatherId);
-        dataMap.getDataMap().putInt("WEATHER_HIGH_KEY", new Double(high).intValue());
-        dataMap.getDataMap().putInt("WEATHER_LOW_KEY",  new Double(low).intValue());
+//        dataMap.getDataMap().putString("Randi",UUID.randomUUID().toString()); // for testing purposes
+        dataMap.getDataMap().putInt("WEATHER_ID_KEY", weatherId);
+        dataMap.getDataMap().putInt("WEATHER_HIGH_KEY",  (int) Math.round(high));
+        dataMap.getDataMap().putInt("WEATHER_LOW_KEY",  (int) Math.round(low));
         dataMap.getDataMap().putString("WEATHER_CURRENT_DATE",friendlyDayString);
         PutDataRequest request = dataMap.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {

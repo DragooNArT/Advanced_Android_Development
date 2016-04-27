@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
+        android:text="Today, April 1"
         android:id="@+id/currentDate"
         android:textSize="20dp"
         android:layout_above="@+id/view"
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="-1°"
+        android:text="7°"
         android:id="@+id/temp_low"
         android:textIsSelectable="true"
 
@@ -56,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="+1°"
+        android:text="29°"
         android:id="@+id/high_temp"
         android:layout_above="@+id/temp_low"
         android:layout_alignEnd="@id/view" />

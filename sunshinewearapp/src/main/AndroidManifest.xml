@@ -3,7 +3,7 @@
     package="com.example.andorid">
 
     <uses-feature android:name="android.hardware.type.watch" />
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,6 +30,27 @@
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
         </intent-filter>
+        </service>
+
+        <service
+            android:name=".sunshine.app.SunshineWatchFaceService"
+            android:label="@string/sunshine_watchface_name"
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/watchface_preview" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/watchface_preview" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
         </service>
     </application>
 
